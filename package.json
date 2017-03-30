@@ -42,7 +42,8 @@
     "webpack-dev-middleware": "^1.6.1"
   },
   "scripts": {
-    "start": "node examples/server.js",
-    "lint": "eslint examples src"
+    "build": "./node_modules/.bin/webpack",
+    "lint": "eslint examples src",
+    "start": "node examples/server.js"
   }
 }
