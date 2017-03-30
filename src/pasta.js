@@ -10,7 +10,7 @@ class Pasta {
     customInfo: {},
   }
 
-  static otherInfo = {
+  static customInfo = {
     page_path() {
       return location.pathname;
     },
@@ -41,28 +41,28 @@ class Pasta {
   }
 
   static updateOtherInfo(more) {
-    Pasta.otherInfo = Object.assign({}, Pasta.otherInfo, more);
+    Pasta.customInfo = Object.assign({}, Pasta.customInfo, more);
   }
 
   constructor(config = {}) {
     const tmpConfig = Object.assign({}, Pasta.config, config);
     Pasta.updateOtherInfo(tmpConfig.customInfo);
-    const otherInfo = this.configOther(tmpConfig);
+    const customInfo = this.configOther(tmpConfig);
 
     this.buffer = []; // [{...}, {...}]
-    this.config = Object.assign({}, tmpConfig, otherInfo);
-    this.otherInfo = otherInfo;
+    this.config = Object.assign({}, tmpConfig, customInfo);
+    this.customInfo = customInfo;
     this.pending = false;
   }
 
   configOther(opts) {
     let result = {};
-    const otherInfo = Pasta.otherInfo;
-    const keys = Object.keys(otherInfo);
+    const customInfo = Pasta.customInfo;
+    const keys = Object.keys(customInfo);
     keys.forEach((key) => {
-      if (otherInfo[key]) {
+      if (customInfo[key]) {
         result = Object.assign({}, result, {
-          [key]: otherInfo[key](opts)
+          [key]: customInfo[key](opts)
         });
       }
     });
@@ -73,7 +73,7 @@ class Pasta {
     const { maxBuff } = this.config;
     this.buffer.push(Object.assign({
       time: (new Date()).getTime() / 1000,
-    }, data, this.otherInfo));
+    }, data, this.customInfo));
     if (this.buffer.length >= maxBuff && !this.pending) {
       this.send();
     }
