@@ -1,0 +1,14 @@
+{
+  "presets": [
+    "es2015",
+    "stage-1",
+    "stage-2",
+    "react"
+  ],
+  "plugins": ["dev-expression"],
+  "env": {
+    "cjs": {
+      "plugins": ["add-module-exports"]
+    }
+  }
+}
