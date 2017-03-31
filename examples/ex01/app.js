@@ -1,5 +1,5 @@
 import '../images';
-import { Pasta } from '../../src';
+import { Pasta } from 'Pasta.js';
 
 document.querySelector('h1').innerHTML = 'EXAMPLE';
 const tracking = new Pasta({

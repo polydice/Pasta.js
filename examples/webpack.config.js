@@ -48,6 +48,12 @@ module.exports = {
     ],
   },
 
+  resolve: {
+    alias: {
+      'Pasta.js': path.join(__dirname, '..', 'src'),
+    },
+  },
+
   // Expose __dirname to allow automatically setting basename.
   context: __dirname,
   node: {

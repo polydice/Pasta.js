@@ -36,14 +36,20 @@
     "file-loader": "^0.10.0",
     "html-loader": "^0.4.4",
     "image-webpack-loader": "~3.2.0",
+    "phantomjs-prebuilt": "^2.1.14",
     "style-loader": "^0.13.1",
     "url-loader": "^0.5.7",
     "webpack": "^2.2.1",
-    "webpack-dev-middleware": "^1.6.1"
+    "webpack-dev-middleware": "^1.6.1",
+    "zuul": "^3.11.1",
+    "zuul-builder-webpack": "^1.2.0"
   },
   "scripts": {
-    "build": "./node_modules/.bin/webpack",
+    "build": "NODE_ENV=production ./node_modules/.bin/webpack",
     "lint": "eslint examples src",
-    "start": "node examples/server.js"
+    "start": "node examples/server.js",
+    "test": "node ./bin/test.js",
+    "test-ci": "./node_modules/.bin/zuul --phantom -- test/*Spec.js",
+    "test-local": "./node_modules/.bin/zuul --local 8080 -- test/*Spec.js"
   }
 }

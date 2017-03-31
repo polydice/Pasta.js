@@ -1,5 +1,6 @@
 /* eslint-disable no-var */
 
+const path = require('path');
 const webpack = require('webpack');
 
 module.exports = {
@@ -23,6 +24,11 @@ module.exports = {
     loaders: [
       { test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader' },
     ],
+  },
+  resolve: {
+    alias: {
+      'Pasta.js': path.join(__dirname, 'src'),
+    },
   },
 }
 
