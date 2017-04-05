@@ -15,5 +15,5 @@ module.exports = {
     }
   ],
   builder: 'zuul-builder-webpack',
-  webpack: require('./webpack.config.js')
+  webpack: require('./webpack.test.config.js')
 };
