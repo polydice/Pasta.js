@@ -174,6 +174,50 @@ describe('Pasta', () => {
     expect(instance.send).toHaveBeenCalled();
   });
 
+  it('should send work, [isAuto]=[f]', () => {
+    const instance = new Pasta({
+      maxBuff: 2,
+    });
+
+    spyOn(self, 'fetch').and.callFake(() => {
+      const p = new Promise((resolve, reject) => {
+        resolve({ ok: true });
+      });
+      return p;
+    });
+
+    instance.buffer = [
+      { evtName: 'testEvt', id: 1},
+      { evtName: 'testEvt', id: 2},
+      { evtName: 'testEvt', id: 3},
+    ];
+
+    instance.send();
+    expect(JSON.parse(fetch.calls.argsFor(0)[1].body)).toEqual(instance.buffer);
+  });
+
+  it('should send work, [isAuto]=[t]', () => {
+    const instance = new Pasta({
+      maxBuff: 2,
+    });
+
+    spyOn(self, 'fetch').and.callFake(() => {
+      const p = new Promise((resolve, reject) => {
+        resolve({ ok: true });
+      });
+      return p;
+    });
+
+    instance.buffer = [
+      { evtName: 'testEvt', id: 1},
+      { evtName: 'testEvt', id: 2},
+      { evtName: 'testEvt', id: 3},
+    ];
+
+    instance.send('isAuto');
+    expect(JSON.parse(fetch.calls.argsFor(0)[1].body)).toEqual(instance.buffer.slice(0, 2));
+  });
+
   it('should send work, [buffer]=[empty]', () => {
     const instance = new Pasta();
 

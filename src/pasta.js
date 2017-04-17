@@ -75,7 +75,7 @@ class Pasta {
       time: (new Date()).getTime() / 1000,
     }, data, this.customInfo));
     if (this.buffer.length >= maxBuff && !this.pending) {
-      this.send();
+      this.send('auto');
     }
   }
 
@@ -84,13 +84,14 @@ class Pasta {
     const length = Math.min(this.buffer.length, maxBuff);
     this.buffer.splice(0, length);
     if (this.buffer.length >= maxBuff) {
-      this.send();
+      this.send('auto');
     }
   }
 
-  send() {
+  send(isAuto = false) {
     const { maxBuff, endpoint } = this.config;
-    const length = Math.min(this.buffer.length, maxBuff);
+    const { length: bufLen } = this.buffer;
+    const length = isAuto ? (Math.min(bufLen, maxBuff)) : bufLen;
     const data = this.buffer.slice(0, length);
     if (data.length === 0) { return false; }
     // sending
