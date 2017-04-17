@@ -50,18 +50,13 @@
     "lint": "eslint examples src",
     "start": "node examples/server.js",
     "test": "NODE_ENV=test node ./bin/test.js",
-    "test-ci": "NODE_ENV=test ./node_modules/.bin/nyc --all ./node_modules/.bin/zuul --phantom -- test/*Spec.js",
+    "test-ci": "NODE_ENV=test ./node_modules/.bin/nyc --all ./node_modules/.bin/zuul --phantom 8080 -- test/*Spec.js",
     "test-local": "NODE_ENV=test ./node_modules/.bin/zuul --local 8080 -- test/*Spec.js"
   },
   "nyc": {
-    "exclude": [
-      "*config*.js",
-      "bin/",
-      "coverage/",
-      "dist/",
-      "examples/",
-      "node_modules/",
-      "test/"
+    "cache": false,
+    "include": [
+      "src/"
     ],
     "require": [
       "babel-register",
@@ -69,7 +64,8 @@
     ],
     "reporter": [
       "lcov",
-      "text"
+      "text",
+      "text-summary"
     ]
   }
 }

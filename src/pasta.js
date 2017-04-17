@@ -40,14 +40,14 @@ class Pasta {
     },
   }
 
-  static updateOtherInfo(more) {
+  static updateCustomInfo(more) {
     Pasta.customInfo = Object.assign({}, Pasta.customInfo, more);
   }
 
   constructor(config = {}) {
     const tmpConfig = Object.assign({}, Pasta.config, config);
-    Pasta.updateOtherInfo(tmpConfig.customInfo);
-    const customInfo = this.configOther(tmpConfig);
+    Pasta.updateCustomInfo(tmpConfig.customInfo);
+    const customInfo = this.customConfig(tmpConfig);
 
     this.buffer = []; // [{...}, {...}]
     this.config = Object.assign({}, tmpConfig, customInfo);
@@ -55,7 +55,7 @@ class Pasta {
     this.pending = false;
   }
 
-  configOther(opts) {
+  customConfig(opts) {
     let result = {};
     const customInfo = Pasta.customInfo;
     const keys = Object.keys(customInfo);
@@ -95,7 +95,7 @@ class Pasta {
     if (data.length === 0) { return false; }
     // sending
     this.pending = true;
-    fetch(endpoint, {
+    return fetch(endpoint, {
       async: false,
       body: JSON.stringify(data),
       header: {
@@ -104,7 +104,7 @@ class Pasta {
       },
       method: 'POST',
       mode: 'cors',
-    }).then(res => {
+    }).then((res) => {
       this.pending = false;
       res.ok && this.pop();
     }).catch(()=> {
