@@ -11,6 +11,7 @@ describe('Pasta', () => {
     // static
     expect(Pasta.config).toBeDefined();
     expect(Pasta.customInfo).toBeDefined();
+    expect(Pasta.defaultCustomInfo).toBeDefined();
     expect(Pasta.updateCustomInfo).toBeDefined();
     // data
     expect(instance.buffer).toBeDefined();
@@ -25,8 +26,7 @@ describe('Pasta', () => {
   });
 
   it('should Pasta.updateCustomInfo work', () => {
-    const oriCustomInfo = Object.keys(Pasta.customInfo);
-
+    const oriCustomInfo = Object.keys(Pasta.defaultCustomInfo);
     Pasta.updateCustomInfo({
       more1() { return 'more1'; },
     });
@@ -36,18 +36,17 @@ describe('Pasta', () => {
   });
 
   it('should customConfig work', () => {
+    const instance = new Pasta();
     Pasta.updateCustomInfo({
       more2(opts) { return opts.more2; },
-      more1: false,
+      viewport: false
     });
-    const instance = new Pasta();
     const opts = {
       more2: 'more2',
     };
-    expect(Pasta.customInfo.more1).toBeDefined();
 
     const result = instance.customConfig(opts);
-    expect(result.more1).not.toBeDefined();
+    expect(result.viewport).not.toBeDefined();
     expect(result.more2).toEqual(opts.more2);
   });
 

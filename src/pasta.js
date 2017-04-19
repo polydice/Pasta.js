@@ -10,7 +10,9 @@ class Pasta {
     customInfo: {},
   }
 
-  static customInfo = {
+  static customInfo = {}
+
+  static defaultCustomInfo = {
     page_path() {
       return location.pathname;
     },
@@ -41,7 +43,7 @@ class Pasta {
   }
 
   static updateCustomInfo(more) {
-    Pasta.customInfo = Object.assign({}, Pasta.customInfo, more);
+    Pasta.customInfo = Object.assign({}, Pasta.defaultCustomInfo, more);
   }
 
   constructor(config = {}) {
