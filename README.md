@@ -5,6 +5,7 @@ It makes easy to collect data to send.
 ### How to run examples?
 - `npm install`
 - `npm start`
+- It is at `http://localhost:8000/ex01`, and show log in the terminal.
 
 ### API
 

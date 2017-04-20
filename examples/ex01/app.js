@@ -3,7 +3,7 @@ import { Pasta } from 'Pasta.js';
 
 document.querySelector('h1').innerHTML = 'EXAMPLE';
 const tracking = new Pasta({
-  endpoint: 'http://localhost:9090/icook.homepage-event.web',
+  endpoint: 'http://localhost:8000/icook.homepage-event.web',
   username: 'username',
   customInfo: {
     viewport: false,
