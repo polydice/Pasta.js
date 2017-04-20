@@ -43,15 +43,16 @@
     "webpack": "^2.2.1",
     "webpack-dev-middleware": "^1.6.1",
     "zuul": "^3.11.1",
-    "zuul-builder-webpack": "^1.2.0"
+    "zuul-builder-webpack": "^1.2.0",
+    "zuul-ngrok": "^4.0.0"
   },
   "scripts": {
     "build": "NODE_ENV=production ./node_modules/.bin/webpack",
     "lint": "eslint examples src",
     "start": "node examples/server.js",
     "test": "NODE_ENV=test node ./bin/test.js",
-    "test-ci": "NODE_ENV=test ./node_modules/.bin/nyc --all ./node_modules/.bin/zuul --phantom 8080 -- test/*Spec.js",
-    "test-local": "NODE_ENV=test ./node_modules/.bin/zuul --local 8080 -- test/*Spec.js"
+    "test-ci": "node bin/test-ci.js",
+    "test-local": "./node_modules/.bin/zuul --local 8080 -- test/*Spec.js"
   },
   "nyc": {
     "cache": false,
