@@ -1,3 +1,6 @@
+import 'es5-shim';
+import 'es6-shim';
+import 'whatwg-fetch';
 import '../images';
 import { Pasta } from 'Pasta.js';
 
