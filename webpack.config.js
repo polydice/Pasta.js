@@ -4,13 +4,16 @@ const path = require('path');
 const webpack = require('webpack');
 
 module.exports = {
-  entry: {
+  entry: process.env.NODE_ENV === 'production' ? {
+    'pasta-full': __dirname + '/src/index-full.js',
+  } : {
     'pasta': __dirname + '/src/index.js',
     'pasta-full': __dirname + '/src/index-full.js',
   },
   output: {
-    libraryTarget: 'umd',
     filename: process.env.NODE_ENV === 'production' ? '[name].min.js' : '[name].js',
+    library: 'Pasta',
+    libraryTarget: 'umd',
     path: __dirname + '/dist',
     publicPath: '/dist/',
   },
