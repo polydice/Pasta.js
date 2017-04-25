@@ -9,6 +9,26 @@ It makes easy to collect data to send.
 - `npm start`
 - Open `http://localhost:8000/ex01`, and show log in the terminal.
 
+### Installation
+
+Using npm:
+
+```
+$ npm install --save Pasta.js
+```
+
+Then with a module bundler like webpack
+
+```
+// using ES6 modules
+import {Pasta} from 'Pasta.js'
+
+// using CommonJS modules
+var Pasta = require('Pasta.js').pasta;
+```
+
+Or UMD build in `dist/pasta-full.min.js` in the installed folder.
+
 ### Browser Support
 It should use some polyfills expect for morden brosers, such as Chrome, Firefox, Microsoft Edge and Safari.
 
