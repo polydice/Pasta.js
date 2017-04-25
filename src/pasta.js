@@ -1,5 +1,3 @@
-import 'whatwg-fetch';
-
 class Pasta {
   static config = {
     maxBuff: 10,
