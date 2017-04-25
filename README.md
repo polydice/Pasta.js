@@ -86,3 +86,6 @@ It can set other information to send every time.
     }
   });
 ```
+
+### License
+Check license [here](https://github.com/polydice/Pasta.js/blob/master/LICENSE).
