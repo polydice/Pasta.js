@@ -7,7 +7,10 @@ It makes easy to collect data to send.
 ### How to run examples?
 - `npm install`
 - `npm start`
-- It is at `http://localhost:8000/ex01`, and show log in the terminal.
+- Open `http://localhost:8000/ex01`, and show log in the terminal.
+
+### Browser Support
+It should use some polyfills expect for morden brosers, such as Chrome, Firefox, Microsoft Edge and Safari.
 
 ### API
 
