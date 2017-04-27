@@ -12,7 +12,7 @@ module.exports = {
   },
   resolve: {
     alias: {
-      'Pasta.js': path.join(__dirname, 'src'),
+      'PastaJs': path.join(__dirname, 'src'),
     },
   },
 }

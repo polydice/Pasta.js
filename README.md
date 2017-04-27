@@ -14,17 +14,17 @@ It makes easy to collect data to send.
 Using npm:
 
 ```
-$ npm install --save Pasta.js
+$ npm install --save PastaJs
 ```
 
 Then with a module bundler like webpack
 
 ```
 // using ES6 modules
-import {Pasta} from 'Pasta.js'
+import {Pasta} from 'PastaJs'
 
 // using CommonJS modules
-var Pasta = require('Pasta.js').pasta;
+var Pasta = require('PastaJs').pasta;
 ```
 
 Or UMD build in `dist/pasta-full.min.js` in the installed folder.
