@@ -1,4 +1,7 @@
-import Pasta from '../src/pasta.js';
+import 'es5-shim';
+import 'es6-shim';
+import 'whatwg-fetch';
+import Pasta from '../src/pasta';
 
 describe('Pasta', () => {
   it('should be defined', () => {

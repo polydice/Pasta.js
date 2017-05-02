@@ -1,6 +1,6 @@
 ## Pasta.js
 
-[![Build Status](https://travis-ci.org/polydice/PastaJs.svg)](https://travis-ci.org/polydice/PastaJS)
+[![Build Status](https://travis-ci.org/polydice/PastaJs.svg)](https://travis-ci.org/polydice/PastaJs)
 
 It makes easy to collect data to send.
 
