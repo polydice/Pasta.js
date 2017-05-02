@@ -19,7 +19,11 @@
     "url": "git+https://github.com/polydice/PastaJs.git"
   },
   "readmeFilename": "README.md",
-  "keywords": ["fetch", "pasta", "collect data"],
+  "keywords": [
+    "fetch",
+    "pasta",
+    "collect data"
+  ],
   "files": [
     "dist"
   ],
@@ -49,6 +53,7 @@
     "eslint": "^3.15.0",
     "eslint-config-airbnb": "^14.1.0",
     "eslint-import-resolver-webpack": "^0.8.1",
+    "eslint-plugin-import": "^2.2.0",
     "eslint-plugin-jsx-a11y": "^4.0.0",
     "eslint-plugin-react": "^6.10.0",
     "expect": "^1.20.2",
@@ -71,7 +76,7 @@
     "build": "npm run build-dev && npm run build-prod",
     "build-dev": "NODE_ENV=dev ./node_modules/.bin/webpack",
     "build-prod": "NODE_ENV=production ./node_modules/.bin/webpack",
-    "lint": "eslint examples src",
+    "lint": "eslint src",
     "start": "node examples/server.js",
     "test": "NODE_ENV=test node ./bin/test.js",
     "test-ci": "node bin/test-ci.js",

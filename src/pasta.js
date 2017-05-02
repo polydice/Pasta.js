@@ -34,7 +34,7 @@ class Pasta {
       const innerWidth = window.innerWidth;
       const height = clientHeight < innerHeight ? innerHeight : clientHeight;
       const width = clientWidth < innerWidth ? innerWidth : clientWidth;
-      return width + 'x' + height;
+      return `${width}x${height}`;
     },
   }
 
@@ -42,29 +42,29 @@ class Pasta {
     Pasta.customInfo = Object.assign({}, Pasta.defaultCustomInfo, more);
   }
 
-  constructor(config = {}) {
-    const tmpConfig = Object.assign({}, Pasta.config, config);
-    Pasta.updateCustomInfo(tmpConfig.customInfo);
-    const customInfo = this.customConfig(tmpConfig);
-
-    this.buffer = []; // [{...}, {...}]
-    this.config = Object.assign({}, tmpConfig, customInfo);
-    this.customInfo = customInfo;
-    this.pending = false;
-  }
-
-  customConfig(opts) {
+  static customConfig(opts) {
     let result = {};
     const customInfo = Pasta.customInfo;
     const keys = Object.keys(customInfo);
     keys.forEach((key) => {
       if (customInfo[key]) {
         result = Object.assign({}, result, {
-          [key]: customInfo[key](opts)
+          [key]: customInfo[key](opts),
         });
       }
     });
     return result;
+  }
+
+  constructor(config = {}) {
+    const tmpConfig = Object.assign({}, Pasta.config, config);
+    Pasta.updateCustomInfo(tmpConfig.customInfo);
+    const customInfo = Pasta.customConfig(tmpConfig);
+
+    this.buffer = []; // [{...}, {...}]
+    this.config = Object.assign({}, tmpConfig, customInfo);
+    this.customInfo = customInfo;
+    this.pending = false;
   }
 
   push(data) {
@@ -105,8 +105,8 @@ class Pasta {
       mode: 'cors',
     }).then((res) => {
       this.pending = false;
-      res.ok && this.pop();
-    }).catch(()=> {
+      if (res.ok) { this.pop(); }
+    }).catch(() => {
       this.pending = false;
     });
   }

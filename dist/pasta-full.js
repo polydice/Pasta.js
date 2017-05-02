@@ -99,24 +99,7 @@ var Pasta = function () {
     value: function updateCustomInfo(more) {
       Pasta.customInfo = Object.assign({}, Pasta.defaultCustomInfo, more);
     }
-  }]);
-
-  function Pasta() {
-    var config = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-
-    _classCallCheck(this, Pasta);
-
-    var tmpConfig = Object.assign({}, Pasta.config, config);
-    Pasta.updateCustomInfo(tmpConfig.customInfo);
-    var customInfo = this.customConfig(tmpConfig);
-
-    this.buffer = []; // [{...}, {...}]
-    this.config = Object.assign({}, tmpConfig, customInfo);
-    this.customInfo = customInfo;
-    this.pending = false;
-  }
-
-  _createClass(Pasta, [{
+  }, {
     key: 'customConfig',
     value: function customConfig(opts) {
       var result = {};
@@ -129,7 +112,24 @@ var Pasta = function () {
       });
       return result;
     }
-  }, {
+  }]);
+
+  function Pasta() {
+    var config = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+    _classCallCheck(this, Pasta);
+
+    var tmpConfig = Object.assign({}, Pasta.config, config);
+    Pasta.updateCustomInfo(tmpConfig.customInfo);
+    var customInfo = Pasta.customConfig(tmpConfig);
+
+    this.buffer = []; // [{...}, {...}]
+    this.config = Object.assign({}, tmpConfig, customInfo);
+    this.customInfo = customInfo;
+    this.pending = false;
+  }
+
+  _createClass(Pasta, [{
     key: 'push',
     value: function push(data) {
       var maxBuff = this.config.maxBuff;
@@ -181,7 +181,9 @@ var Pasta = function () {
         mode: 'cors'
       }).then(function (res) {
         _this.pending = false;
-        res.ok && _this.pop();
+        if (res.ok) {
+          _this.pop();
+        }
       }).catch(function () {
         _this.pending = false;
       });

@@ -16,13 +16,13 @@ describe('Pasta', () => {
     expect(Pasta.customInfo).toBeDefined();
     expect(Pasta.defaultCustomInfo).toBeDefined();
     expect(Pasta.updateCustomInfo).toBeDefined();
+    expect(Pasta.customConfig).toBeDefined();
     // data
     expect(instance.buffer).toBeDefined();
     expect(instance.config).toBeDefined();
     expect(instance.customInfo).toBeDefined();
     expect(instance.pending).toBeDefined();
     // method
-    expect(instance.customConfig).toBeDefined();
     expect(instance.push).toBeDefined();
     expect(instance.pop).toBeDefined();
     expect(instance.send).toBeDefined();
@@ -48,7 +48,7 @@ describe('Pasta', () => {
       more2: 'more2',
     };
 
-    const result = instance.customConfig(opts);
+    const result = Pasta.customConfig(opts);
     expect(result.viewport).not.toBeDefined();
     expect(result.more2).toEqual(opts.more2);
   });
