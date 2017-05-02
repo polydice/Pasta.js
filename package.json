@@ -1,5 +1,5 @@
 {
-  "name": "PastaJs",
+  "name": "@polydice/PastaJs",
   "version": "1.0.0",
   "license": "MIT",
   "description": "It makes easy to collect data to send.",

@@ -4,4 +4,5 @@ umd
 node_modules
 npm-debug.log
 coverage
+yarn.lock
 .nyc_output
