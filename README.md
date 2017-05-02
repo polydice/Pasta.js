@@ -30,7 +30,7 @@ var Pasta = require('PastaJs').pasta;
 Or UMD build in `dist/pasta-full.min.js` in the installed folder.
 
 ### Browser Support
-It should use some polyfills expect for morden brosers, such as Chrome, Firefox, Microsoft Edge and Safari.
+It should use some polyfills expect for modern browsers, such as Chrome, Firefox, Microsoft Edge and Safari.
 
 ### API
 
@@ -54,7 +54,7 @@ core parameters
 
 - *data*: Object(required), any tracked data.
 
-After initialization, use push to candicated queue. It will send automatically if buffer is up to limit (default: 10).
+After initialization, use push to candidated queue. It will send automatically if buffer is up to limit (default: 10).
 
 ```
   tracking.push({
