@@ -2,7 +2,7 @@ import 'es5-shim';
 import 'es6-shim';
 import 'whatwg-fetch';
 import '../images';
-import { Pasta } from 'PastaJs';
+import { Pasta } from 'pasta-js';
 
 document.querySelector('h1').innerHTML = 'EXAMPLE';
 const tracking = new Pasta({

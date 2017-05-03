@@ -50,7 +50,7 @@ module.exports = {
 
   resolve: {
     alias: {
-      'PastaJs': path.join(__dirname, '..', 'src'),
+      'pasta-js': path.join(__dirname, '..', 'src'),
     },
   },
 

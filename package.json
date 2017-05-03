@@ -1,5 +1,5 @@
 {
-  "name": "@polydice/PastaJs",
+  "name": "@polydice/pasta-js",
   "version": "1.0.0",
   "license": "MIT",
   "description": "It makes easy to collect data to send.",
@@ -10,13 +10,13 @@
   "maintainers": [
     "ichi <ichi1234567@gmail.com>"
   ],
-  "homepage": "https://github.com/polydice/PastaJs",
+  "homepage": "https://github.com/polydice/pasta-js",
   "bugs": {
-    "url": "https://github.com/polydice/PastaJs/issues"
+    "url": "https://github.com/polydice/pasta-js/issues"
   },
   "respository": {
     "type": "git",
-    "url": "git+https://github.com/polydice/PastaJs.git"
+    "url": "git+https://github.com/polydice/pasta-js.git"
   },
   "readmeFilename": "README.md",
   "keywords": [

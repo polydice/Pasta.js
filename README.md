@@ -1,6 +1,6 @@
-## Pasta.js
+## pasta-js
 
-[![Build Status](https://travis-ci.org/polydice/PastaJs.svg)](https://travis-ci.org/polydice/PastaJs)
+[![Build Status](https://travis-ci.org/polydice/pasta-js.svg)](https://travis-ci.org/polydice/pasta-js)
 
 It makes easy to collect data to send.
 
@@ -14,17 +14,17 @@ It makes easy to collect data to send.
 Using npm:
 
 ```
-$ npm install --save PastaJs
+$ npm install --save pasta-js
 ```
 
 Then with a module bundler like webpack
 
 ```
 // using ES6 modules
-import {Pasta} from 'PastaJs'
+import {Pasta} from 'pasta-js'
 
 // using CommonJS modules
-var Pasta = require('PastaJs').pasta;
+var Pasta = require('pasta-js').pasta;
 ```
 
 Or UMD build in `dist/pasta-full.min.js` in the installed folder.
@@ -108,4 +108,4 @@ It can set other information to send every time.
 ```
 
 ### License
-Check license [here](https://github.com/polydice/Pasta.js/blob/master/LICENSE).
+Check license [here](https://github.com/polydice/pasta-js/blob/master/LICENSE).
