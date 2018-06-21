@@ -175,7 +175,6 @@ var Pasta = function () {
       var form = new FormData();
       form.append('json', JSON.stringify(data));
       return fetch(endpoint, {
-        async: false,
         body: form,
         method: 'POST',
         mode: 'cors'
