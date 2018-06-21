@@ -94,6 +94,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+/* globals FormData */
+
 var Pasta = function () {
   _createClass(Pasta, null, [{
     key: 'updateCustomInfo',
@@ -171,13 +173,11 @@ var Pasta = function () {
       }
       // sending
       this.pending = true;
+      var form = new FormData();
+      form.append('json', JSON.stringify(data));
       return fetch(endpoint, {
         async: false,
-        body: JSON.stringify(data),
-        header: {
-          'Accept-Charset': 'utf-8',
-          'Content-Type': 'application/json'
-        },
+        body: form,
         method: 'POST',
         mode: 'cors'
       }).then(function (res) {

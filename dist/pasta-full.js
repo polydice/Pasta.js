@@ -93,6 +93,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+/* globals FormData */
+
 var Pasta = function () {
   _createClass(Pasta, null, [{
     key: 'updateCustomInfo',
@@ -170,13 +172,11 @@ var Pasta = function () {
       }
       // sending
       this.pending = true;
+      var form = new FormData();
+      form.append('json', JSON.stringify(data));
       return fetch(endpoint, {
         async: false,
-        body: JSON.stringify(data),
-        header: {
-          'Accept-Charset': 'utf-8',
-          'Content-Type': 'application/json'
-        },
+        body: form,
         method: 'POST',
         mode: 'cors'
       }).then(function (res) {
@@ -581,6 +581,26 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
     var toStr = call.bind(ObjectPrototype.toString);
     var arraySlice = call.bind(array_slice);
     var arraySliceApply = apply.bind(array_slice);
+    /* globals document */
+    if (typeof document === 'object' && document && document.documentElement) {
+        try {
+            arraySlice(document.documentElement.childNodes);
+        } catch (e) {
+            var origArraySlice = arraySlice;
+            var origArraySliceApply = arraySliceApply;
+            arraySlice = function arraySliceIE(arr) {
+                var r = [];
+                var i = arr.length;
+                while (i-- > 0) {
+                    r[i] = arr[i];
+                }
+                return origArraySliceApply(r, origArraySlice(arguments, 1));
+            };
+            arraySliceApply = function arraySliceApplyIE(arr, args) {
+                return origArraySliceApply(arraySlice(arr), args);
+            };
+        }
+    }
     var strSlice = call.bind(StringPrototype.slice);
     var strSplit = call.bind(StringPrototype.split);
     var strIndexOf = call.bind(StringPrototype.indexOf);
@@ -1174,10 +1194,14 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
     var sortIgnoresNonFunctions = (function () {
         try {
             [1, 2].sort(null);
-            [1, 2].sort({});
-            return true;
-        } catch (e) {}
-        return false;
+        } catch (e) {
+            try {
+                [1, 2].sort({});
+            } catch (e2) {
+                return false;
+            }
+        }
+        return true;
     }());
     var sortThrowsOnRegex = (function () {
         // this is a problem in Firefox 4, in which `typeof /a/ === 'function'`
@@ -1216,14 +1240,14 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
     // http://es5.github.com/#x15.2.3.14
 
     // http://whattheheadsaid.com/2010/10/a-safer-object-keys-compatibility-implementation
-    var hasDontEnumBug = !isEnum({ 'toString': null }, 'toString');
+    var hasDontEnumBug = !isEnum({ 'toString': null }, 'toString'); // jscs:ignore disallowQuotedKeysInObjects
     var hasProtoEnumBug = isEnum(function () {}, 'prototype');
     var hasStringEnumBug = !owns('x', '0');
     var equalsConstructorPrototype = function (o) {
         var ctor = o.constructor;
         return ctor && ctor.prototype === o;
     };
-    var blacklistedKeys = {
+    var excludedKeys = {
         $window: true,
         $console: true,
         $parent: true,
@@ -1233,7 +1257,11 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
         $frameElement: true,
         $webkitIndexedDB: true,
         $webkitStorageInfo: true,
-        $external: true
+        $external: true,
+        $width: true,
+        $height: true,
+        $top: true,
+        $localStorage: true
     };
     var hasAutomationEqualityBug = (function () {
         /* globals window */
@@ -1242,7 +1270,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
         }
         for (var k in window) {
             try {
-                if (!blacklistedKeys['$' + k] && owns(window, k) && window[k] !== null && typeof window[k] === 'object') {
+                if (!excludedKeys['$' + k] && owns(window, k) && window[k] !== null && typeof window[k] === 'object') {
                     equalsConstructorPrototype(window[k]);
                 }
             } catch (e) {
@@ -1278,12 +1306,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
         return toStr(value) === '[object Arguments]';
     };
     var isLegacyArguments = function isArguments(value) {
-        return value !== null &&
-            typeof value === 'object' &&
-            typeof value.length === 'number' &&
-            value.length >= 0 &&
-            !isArray(value) &&
-            isCallable(value.callee);
+        return value !== null
+            && typeof value === 'object'
+            && typeof value.length === 'number'
+            && value.length >= 0
+            && !isArray(value)
+            && isCallable(value.callee);
     };
     var isArguments = isStandardArguments(arguments) ? isStandardArguments : isLegacyArguments;
 
@@ -1360,10 +1388,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
     var timeZoneOffset = aNegativeTestDate.getTimezoneOffset();
     if (timeZoneOffset < -720) {
         hasToDateStringFormatBug = aNegativeTestDate.toDateString() !== 'Tue Jan 02 -45875';
-        hasToStringFormatBug = !(/^Thu Dec 10 2015 \d\d:\d\d:\d\d GMT[-\+]\d\d\d\d(?: |$)/).test(aPositiveTestDate.toString());
+        hasToStringFormatBug = !(/^Thu Dec 10 2015 \d\d:\d\d:\d\d GMT[-+]\d\d\d\d(?: |$)/).test(String(aPositiveTestDate));
     } else {
         hasToDateStringFormatBug = aNegativeTestDate.toDateString() !== 'Mon Jan 01 -45875';
-        hasToStringFormatBug = !(/^Wed Dec 09 2015 \d\d:\d\d:\d\d GMT[-\+]\d\d\d\d(?: |$)/).test(aPositiveTestDate.toString());
+        hasToStringFormatBug = !(/^Wed Dec 09 2015 \d\d:\d\d:\d\d GMT[-+]\d\d\d\d(?: |$)/).test(String(aPositiveTestDate));
     }
 
     var originalGetFullYear = call.bind(Date.prototype.getFullYear);
@@ -1472,13 +1500,13 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
             var hour = originalGetUTCHours(this);
             var minute = originalGetUTCMinutes(this);
             var second = originalGetUTCSeconds(this);
-            return dayName[day] + ', ' +
-                (date < 10 ? '0' + date : date) + ' ' +
-                monthName[month] + ' ' +
-                year + ' ' +
-                (hour < 10 ? '0' + hour : hour) + ':' +
-                (minute < 10 ? '0' + minute : minute) + ':' +
-                (second < 10 ? '0' + second : second) + ' GMT';
+            return dayName[day] + ', '
+                + (date < 10 ? '0' + date : date) + ' '
+                + monthName[month] + ' '
+                + year + ' '
+                + (hour < 10 ? '0' + hour : hour) + ':'
+                + (minute < 10 ? '0' + minute : minute) + ':'
+                + (second < 10 ? '0' + second : second) + ' GMT';
         }
     }, hasNegativeMonthYearBug || hasToUTCStringFormatBug);
 
@@ -1492,10 +1520,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
             var date = this.getDate();
             var month = this.getMonth();
             var year = this.getFullYear();
-            return dayName[day] + ' ' +
-                monthName[month] + ' ' +
-                (date < 10 ? '0' + date : date) + ' ' +
-                year;
+            return dayName[day] + ' '
+                + monthName[month] + ' '
+                + (date < 10 ? '0' + date : date) + ' '
+                + year;
         }
     }, hasNegativeMonthYearBug || hasToDateStringFormatBug);
 
@@ -1515,16 +1543,16 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
             var timezoneOffset = this.getTimezoneOffset();
             var hoursOffset = Math.floor(Math.abs(timezoneOffset) / 60);
             var minutesOffset = Math.floor(Math.abs(timezoneOffset) % 60);
-            return dayName[day] + ' ' +
-                monthName[month] + ' ' +
-                (date < 10 ? '0' + date : date) + ' ' +
-                year + ' ' +
-                (hour < 10 ? '0' + hour : hour) + ':' +
-                (minute < 10 ? '0' + minute : minute) + ':' +
-                (second < 10 ? '0' + second : second) + ' GMT' +
-                (timezoneOffset > 0 ? '-' : '+') +
-                (hoursOffset < 10 ? '0' + hoursOffset : hoursOffset) +
-                (minutesOffset < 10 ? '0' + minutesOffset : minutesOffset);
+            return dayName[day] + ' '
+                + monthName[month] + ' '
+                + (date < 10 ? '0' + date : date) + ' '
+                + year + ' '
+                + (hour < 10 ? '0' + hour : hour) + ':'
+                + (minute < 10 ? '0' + minute : minute) + ':'
+                + (second < 10 ? '0' + second : second) + ' GMT'
+                + (timezoneOffset > 0 ? '-' : '+')
+                + (hoursOffset < 10 ? '0' + hoursOffset : hoursOffset)
+                + (minutesOffset < 10 ? '0' + minutesOffset : minutesOffset);
         };
         if (supportsDescriptors) {
             $Object.defineProperty(Date.prototype, 'toString', {
@@ -1544,7 +1572,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
     // this object is not a finite Number a RangeError exception is thrown.
     var negativeDate = -62198755200000;
     var negativeYearString = '-000001';
-    var hasNegativeDateBug = Date.prototype.toISOString && new Date(negativeDate).toISOString().indexOf(negativeYearString) === -1;
+    var hasNegativeDateBug = Date.prototype.toISOString && new Date(negativeDate).toISOString().indexOf(negativeYearString) === -1; // eslint-disable-line max-len
     var hasSafari51DateBug = Date.prototype.toISOString && new Date(-1).toISOString() !== '1969-12-31T23:59:59.999Z';
 
     var getTime = call.bind(Date.prototype.getTime);
@@ -1561,13 +1589,19 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
             var month = originalGetUTCMonth(this);
             // see https://github.com/es-shims/es5-shim/issues/111
             year += Math.floor(month / 12);
-            month = (month % 12 + 12) % 12;
+            month = ((month % 12) + 12) % 12;
 
             // the date time string format is specified in 15.9.1.15.
-            var result = [month + 1, originalGetUTCDate(this), originalGetUTCHours(this), originalGetUTCMinutes(this), originalGetUTCSeconds(this)];
+            var result = [
+                month + 1,
+                originalGetUTCDate(this),
+                originalGetUTCHours(this),
+                originalGetUTCMinutes(this),
+                originalGetUTCSeconds(this)
+            ];
             year = (
-                (year < 0 ? '-' : (year > 9999 ? '+' : '')) +
-                strSlice('00000' + Math.abs(year), (0 <= year && year <= 9999) ? -4 : -6)
+                (year < 0 ? '-' : (year > 9999 ? '+' : ''))
+                + strSlice('00000' + Math.abs(year), (0 <= year && year <= 9999) ? -4 : -6)
             );
 
             for (var i = 0; i < result.length; ++i) {
@@ -1576,9 +1610,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
             }
             // pad milliseconds to have three digits.
             return (
-                year + '-' + arraySlice(result, 0, 2).join('-') +
-                'T' + arraySlice(result, 2).join(':') + '.' +
-                strSlice('000' + originalGetUTCMilliseconds(this), -3) + 'Z'
+                year + '-' + arraySlice(result, 0, 2).join('-')
+                + 'T' + arraySlice(result, 2).join(':') + '.'
+                + strSlice('000' + originalGetUTCMilliseconds(this), -3) + 'Z'
             );
         }
     }, hasNegativeDateBug || hasSafari51DateBug);
@@ -1589,10 +1623,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
     // JSON.stringify (15.12.3).
     var dateToJSONIsSupported = (function () {
         try {
-            return Date.prototype.toJSON &&
-                new Date(NaN).toJSON() === null &&
-                new Date(negativeDate).toJSON().indexOf(negativeYearString) !== -1 &&
-                Date.prototype.toJSON.call({ // generic
+            return Date.prototype.toJSON
+                && new Date(NaN).toJSON() === null
+                && new Date(negativeDate).toJSON().indexOf(negativeYearString) !== -1
+                && Date.prototype.toJSON.call({ // generic
                     toISOString: function () { return true; }
                 });
         } catch (e) {
@@ -1646,13 +1680,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
         // XXX global assignment won't work in embeddings that use
         // an alternate object for the context.
         /* global Date: true */
-        /* eslint-disable no-undef */
         var maxSafeUnsigned32Bit = Math.pow(2, 31) - 1;
         var hasSafariSignedIntBug = isActualNaN(new Date(1970, 0, 1, 0, 0, 0, maxSafeUnsigned32Bit + 1).getTime());
-        /* eslint-disable no-implicit-globals */
+        // eslint-disable-next-line no-implicit-globals, no-global-assign
         Date = (function (NativeDate) {
-        /* eslint-enable no-implicit-globals */
-        /* eslint-enable no-undef */
             // Date.length === 7
             var DateShim = function Date(Y, M, D, h, m, s, ms) {
                 var length = arguments.length;
@@ -1667,19 +1698,19 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
                         seconds += sToShift;
                         millis -= sToShift * 1e3;
                     }
-                    date = length === 1 && $String(Y) === Y ? // isString(Y)
+                    date = length === 1 && $String(Y) === Y // isString(Y)
                         // We explicitly pass it through parse:
-                        new NativeDate(DateShim.parse(Y)) :
+                        ? new NativeDate(DateShim.parse(Y))
                         // We have to manually make calls depending on argument
                         // length here
-                        length >= 7 ? new NativeDate(Y, M, D, h, m, seconds, millis) :
-                        length >= 6 ? new NativeDate(Y, M, D, h, m, seconds) :
-                        length >= 5 ? new NativeDate(Y, M, D, h, m) :
-                        length >= 4 ? new NativeDate(Y, M, D, h) :
-                        length >= 3 ? new NativeDate(Y, M, D) :
-                        length >= 2 ? new NativeDate(Y, M) :
-                        length >= 1 ? new NativeDate(Y instanceof NativeDate ? +Y : Y) :
-                                      new NativeDate();
+                        : length >= 7 ? new NativeDate(Y, M, D, h, m, seconds, millis)
+                            : length >= 6 ? new NativeDate(Y, M, D, h, m, seconds)
+                                : length >= 5 ? new NativeDate(Y, M, D, h, m)
+                                    : length >= 4 ? new NativeDate(Y, M, D, h)
+                                        : length >= 3 ? new NativeDate(Y, M, D)
+                                            : length >= 2 ? new NativeDate(Y, M)
+                                                : length >= 1 ? new NativeDate(Y instanceof NativeDate ? +Y : Y)
+                                                    : new NativeDate();
                 } else {
                     date = NativeDate.apply(this, arguments);
                 }
@@ -1691,38 +1722,37 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
             };
 
             // 15.9.1.15 Date Time String Format.
-            var isoDateExpression = new RegExp('^' +
-                '(\\d{4}|[+-]\\d{6})' + // four-digit year capture or sign +
-                                          // 6-digit extended year
-                '(?:-(\\d{2})' + // optional month capture
-                '(?:-(\\d{2})' + // optional day capture
-                '(?:' + // capture hours:minutes:seconds.milliseconds
-                    'T(\\d{2})' + // hours capture
-                    ':(\\d{2})' + // minutes capture
-                    '(?:' + // optional :seconds.milliseconds
-                        ':(\\d{2})' + // seconds capture
-                        '(?:(\\.\\d{1,}))?' + // milliseconds capture
-                    ')?' +
-                '(' + // capture UTC offset component
-                    'Z|' + // UTC capture
-                    '(?:' + // offset specifier +/-hours:minutes
-                        '([-+])' + // sign capture
-                        '(\\d{2})' + // hours offset capture
-                        ':(\\d{2})' + // minutes offset capture
-                    ')' +
-                ')?)?)?)?' +
-            '$');
+            var isoDateExpression = new RegExp('^'
+                + '(\\d{4}|[+-]\\d{6})' // four-digit year capture or sign + 6-digit extended year
+                + '(?:-(\\d{2})' // optional month capture
+                + '(?:-(\\d{2})' // optional day capture
+                + '(?:' // capture hours:minutes:seconds.milliseconds
+                    + 'T(\\d{2})' // hours capture
+                    + ':(\\d{2})' // minutes capture
+                    + '(?:' // optional :seconds.milliseconds
+                        + ':(\\d{2})' // seconds capture
+                        + '(?:(\\.\\d{1,}))?' // milliseconds capture
+                    + ')?'
+                + '(' // capture UTC offset component
+                    + 'Z|' // UTC capture
+                    + '(?:' // offset specifier +/-hours:minutes
+                        + '([-+])' // sign capture
+                        + '(\\d{2})' // hours offset capture
+                        + ':(\\d{2})' // minutes offset capture
+                    + ')'
+                + ')?)?)?)?'
+            + '$');
 
             var months = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365];
 
             var dayFromMonth = function dayFromMonth(year, month) {
                 var t = month > 1 ? 1 : 0;
                 return (
-                    months[month] +
-                    Math.floor((year - 1969 + t) / 4) -
-                    Math.floor((year - 1901 + t) / 100) +
-                    Math.floor((year - 1601 + t) / 400) +
-                    365 * (year - 1970)
+                    months[month]
+                    + Math.floor((year - 1969 + t) / 4)
+                    - Math.floor((year - 1901 + t) / 100)
+                    + Math.floor((year - 1601 + t) / 400)
+                    + (365 * (year - 1970))
                 );
             };
 
@@ -1752,9 +1782,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
                 UTC: NativeDate.UTC
             }, true);
             DateShim.prototype = NativeDate.prototype;
-            defineProperties(DateShim.prototype, {
-                constructor: DateShim
-            }, true);
+            defineProperties(DateShim.prototype, { constructor: DateShim }, true);
 
             // Upgrade Date.parse to handle simplified ISO 8601 strings
             var parseShim = function parse(string) {
@@ -1780,22 +1808,22 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
                         result;
                     var hasMinutesOrSecondsOrMilliseconds = minute > 0 || second > 0 || millisecond > 0;
                     if (
-                        hour < (hasMinutesOrSecondsOrMilliseconds ? 24 : 25) &&
-                        minute < 60 && second < 60 && millisecond < 1000 &&
-                        month > -1 && month < 12 && hourOffset < 24 &&
-                        minuteOffset < 60 && // detect invalid offsets
-                        day > -1 &&
-                        day < (dayFromMonth(year, month + 1) - dayFromMonth(year, month))
+                        hour < (hasMinutesOrSecondsOrMilliseconds ? 24 : 25)
+                        && minute < 60 && second < 60 && millisecond < 1000
+                        && month > -1 && month < 12 && hourOffset < 24
+                        && minuteOffset < 60 // detect invalid offsets
+                        && day > -1
+                        && day < (dayFromMonth(year, month + 1) - dayFromMonth(year, month))
                     ) {
                         result = (
-                            (dayFromMonth(year, month) + day) * 24 +
-                            hour +
-                            hourOffset * signOffset
+                            ((dayFromMonth(year, month) + day) * 24)
+                            + hour
+                            + (hourOffset * signOffset)
                         ) * 60;
-                        result = (
-                            (result + minute + minuteOffset * signOffset) * 60 +
-                            second
-                        ) * 1000 + millisecond;
+                        result = ((
+                            ((result + minute + (minuteOffset * signOffset)) * 60)
+                            + second
+                        ) * 1000) + millisecond;
                         if (isLocalTime) {
                             result = toUTC(result);
                         }
@@ -1830,10 +1858,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
     // ES5.1 15.7.4.5
     // http://es5.github.com/#x15.7.4.5
     var hasToFixedBugs = NumberPrototype.toFixed && (
-      (0.00008).toFixed(3) !== '0.000' ||
-      (0.9).toFixed(0) !== '1' ||
-      (1.255).toFixed(2) !== '1.25' ||
-      (1000000000000000128).toFixed(0) !== '1000000000000000128'
+        (0.00008).toFixed(3) !== '0.000'
+        || (0.9).toFixed(0) !== '1'
+        || (1.255).toFixed(2) !== '1.25'
+        || (1000000000000000128).toFixed(0) !== '1000000000000000128'
     );
 
     var toFixedHelpers = {
@@ -2011,12 +2039,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
     //    '.'.split(/()()/) should be ["."], not ["", "", "."]
 
     if (
-        'ab'.split(/(?:ab)*/).length !== 2 ||
-        '.'.split(/(.?)(.?)/).length !== 4 ||
-        'tesst'.split(/(s)*/)[1] === 't' ||
-        'test'.split(/(?:)/, -1).length !== 4 ||
-        ''.split(/.?/).length ||
-        '.'.split(/()()/).length > 1
+        'ab'.split(/(?:ab)*/).length !== 2
+        || '.'.split(/(.?)(.?)/).length !== 4
+        || 'tesst'.split(/(s)*/)[1] === 't'
+        || 'test'.split(/(?:)/, -1).length !== 4
+        || ''.split(/.?/).length
+        || '.'.split(/()()/).length > 1
     ) {
         (function () {
             var compliantExecNpcg = typeof (/()??/).exec('')[1] === 'undefined'; // NPCG: nonparticipating capturing group
@@ -2034,10 +2062,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
                 }
 
                 var output = [];
-                var flags = (separator.ignoreCase ? 'i' : '') +
-                            (separator.multiline ? 'm' : '') +
-                            (separator.unicode ? 'u' : '') + // in ES6
-                            (separator.sticky ? 'y' : ''), // Firefox 3+ and ES6
+                var flags = (separator.ignoreCase ? 'i' : '')
+                            + (separator.multiline ? 'm' : '')
+                            + (separator.unicode ? 'u' : '') // in ES6
+                            + (separator.sticky ? 'y' : ''), // Firefox 3+ and ES6
                     lastLastIndex = 0,
                     // Make `global` and avoid `lastIndex` issues by working with a copy
                     separator2, match, lastIndex, lastLength;
@@ -2162,9 +2190,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
 
     // ES5 15.5.4.20
     // whitespace from: http://es5.github.io/#x15.5.4.20
-    var ws = '\x09\x0A\x0B\x0C\x0D\x20\xA0\u1680\u180E\u2000\u2001\u2002\u2003' +
-        '\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u202F\u205F\u3000\u2028' +
-        '\u2029\uFEFF';
+    var ws = '\x09\x0A\x0B\x0C\x0D\x20\xA0\u1680\u180E\u2000\u2001\u2002\u2003'
+        + '\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u202F\u205F\u3000\u2028'
+        + '\u2029\uFEFF';
     var zeroWidth = '\u200b';
     var wsRegexChars = '[' + ws + ']';
     var trimBeginRegexp = new RegExp('^' + wsRegexChars + wsRegexChars + '*');
@@ -2214,13 +2242,18 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
     }, StringPrototype.lastIndexOf.length !== 1);
 
     // ES-5 15.1.2.2
-    /* eslint-disable radix */
+    // eslint-disable-next-line radix
     if (parseInt(ws + '08') !== 8 || parseInt(ws + '0x16') !== 22) {
-    /* eslint-enable radix */
         /* global parseInt: true */
         parseInt = (function (origParseInt) {
-            var hexRegex = /^[\-+]?0[xX]/;
+            var hexRegex = /^[-+]?0[xX]/;
             return function parseInt(str, radix) {
+                if (typeof str === 'symbol') {
+                    // handle Symbols in node 8.3/8.4
+                    // eslint-disable-next-line no-implicit-coercion, no-unused-expressions
+                    '' + str; // jscs:ignore disallowImplicitTypeConversion
+                }
+
                 var string = trim(String(str));
                 var defaultedRadix = $Number(radix) || (hexRegex.test(string) ? 16 : 10);
                 return origParseInt(string, defaultedRadix);
@@ -6523,7 +6556,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
 
   function parseHeaders(rawHeaders) {
     var headers = new Headers()
-    rawHeaders.split(/\r?\n/).forEach(function(line) {
+    // Replace instances of \r\n and \n followed by at least one space or horizontal tab with a space
+    // https://tools.ietf.org/html/rfc7230#section-3.2
+    var preProcessedHeaders = rawHeaders.replace(/\r?\n[\t ]+/g, ' ')
+    preProcessedHeaders.split(/\r?\n/).forEach(function(line) {
       var parts = line.split(':')
       var key = parts.shift().trim()
       if (key) {
@@ -6542,7 +6578,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
     }
 
     this.type = 'default'
-    this.status = 'status' in options ? options.status : 200
+    this.status = options.status === undefined ? 200 : options.status
     this.ok = this.status >= 200 && this.status < 300
     this.statusText = 'statusText' in options ? options.statusText : 'OK'
     this.headers = new Headers(options.headers)
@@ -6609,6 +6645,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
 
       if (request.credentials === 'include') {
         xhr.withCredentials = true
+      } else if (request.credentials === 'omit') {
+        xhr.withCredentials = false
       }
 
       if ('responseType' in xhr && support.blob) {
@@ -6827,6 +6865,10 @@ process.off = noop;
 process.removeListener = noop;
 process.removeAllListeners = noop;
 process.emit = noop;
+process.prependListener = noop;
+process.prependOnceListener = noop;
+
+process.listeners = function (name) { return [] }
 
 process.binding = function (name) {
     throw new Error('process.binding is not supported');

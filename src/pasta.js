@@ -1,3 +1,5 @@
+/* globals FormData */
+
 class Pasta {
   static config = {
     maxBuff: 10,
@@ -94,13 +96,11 @@ class Pasta {
     if (data.length === 0) { return false; }
     // sending
     this.pending = true;
+    const form = new FormData();
+    form.append('json', JSON.stringify(data));
     return fetch(endpoint, {
       async: false,
-      body: JSON.stringify(data),
-      header: {
-        'Accept-Charset': 'utf-8',
-        'Content-Type': 'application/json',
-      },
+      body: form,
       method: 'POST',
       mode: 'cors',
     }).then((res) => {
