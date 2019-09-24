@@ -14,7 +14,7 @@ It makes easy to collect data to send.
 Using npm:
 
 ```
-$ npm install --save pasta-js
+$ npm install --save @polydice/pasta-js
 ```
 
 Then with a module bundler like webpack
